@@ -1,5 +1,4 @@
 const express = require("express");
-
 const router = express.Router();
 
 const {
@@ -11,29 +10,18 @@ const {
   archiveNote,
 } = require("../controllers/noteController");
 
-const protect = require("../middleware/authMiddleware");
+const authMiddleware = require("../middleware/authMiddleware");
 
+router.post("/", authMiddleware, createNote);
 
-// CREATE + GET
-router
-  .route("/")
-  .post(protect, createNote)
-  .get(protect, getNotes);
+router.get("/", authMiddleware, getNotes);
 
+router.get("/:id", authMiddleware, getSingleNote);
 
-// SINGLE NOTE
-router
-  .route("/:id")
-  .get(protect, getSingleNote)
-  .put(protect, updateNote)
-  .delete(protect, deleteNote);
+router.put("/:id", authMiddleware, updateNote);
 
+router.delete("/:id", authMiddleware, deleteNote);
 
-// ARCHIVE / UNARCHIVE
-router.put(
-  "/archive/:id",
-  protect,
-  archiveNote
-);
+router.put("/archive/:id", authMiddleware, archiveNote);
 
 module.exports = router;

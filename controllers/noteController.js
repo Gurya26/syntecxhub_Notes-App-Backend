@@ -1,8 +1,7 @@
 const Note = require("../models/Note");
 
-
 // CREATE NOTE
-const createNote = async (req, res) => {
+exports.createNote = async (req, res) => {
   try {
     const { title, content } = req.body;
 
@@ -12,140 +11,102 @@ const createNote = async (req, res) => {
       user: req.user.id,
     });
 
-    res.status(201).json({
-      message: "Note Created",
-      note,
-    });
+    res.status(201).json(note);
   } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
+    res.status(500).json({ message: "Create Note Failed" });
   }
 };
 
-
-// GET ALL NOTES
-const getNotes = async (req, res) => {
+// GET ALL NOTES WITH POPULATE
+exports.getNotes = async (req, res) => {
   try {
-    const notes = await Note.find({
-      user: req.user.id,
-    });
+    const notes = await Note.find({ user: req.user.id }).populate(
+      "user",
+      "name email"
+    );
 
-    res.status(200).json(notes);
+    res.json(notes);
   } catch (error) {
-    res.status(500).json({
-      message: error.message,
-    });
+    res.status(500).json({ message: "Get Notes Failed" });
   }
 };
-
 
 // GET SINGLE NOTE
-const getSingleNote = async (req, res) => {
+exports.getSingleNote = async (req, res) => {
   try {
-    const note = await Note.findById(req.params.id);
+    const note = await Note.findOne({
+      _id: req.params.id,
+      user: req.user.id,
+    }).populate("user", "name email");
 
     if (!note) {
       return res.status(404).json({
-        message: "Note not found",
+        message: "Note Not Found",
       });
     }
 
-    res.status(200).json(note);
+    res.json(note);
   } catch (error) {
     res.status(500).json({
-      message: error.message,
+      message: "Get Single Note Failed",
     });
   }
 };
 
-
 // UPDATE NOTE
-const updateNote = async (req, res) => {
+exports.updateNote = async (req, res) => {
   try {
-    const { title, content } = req.body;
-
-    const updatedNote = await Note.findByIdAndUpdate(
-      req.params.id,
+    const note = await Note.findOneAndUpdate(
       {
-        title,
-        content,
+        _id: req.params.id,
+        user: req.user.id,
       },
+      req.body,
       { new: true }
     );
 
-    res.status(200).json({
-      message: "Note Updated",
-      updatedNote,
-    });
+    res.json(note);
   } catch (error) {
     res.status(500).json({
-      message: error.message,
+      message: "Update Failed",
     });
   }
 };
-
 
 // DELETE NOTE
-const deleteNote = async (req, res) => {
+exports.deleteNote = async (req, res) => {
   try {
-    const note = await Note.findById(req.params.id);
+    await Note.findOneAndDelete({
+      _id: req.params.id,
+      user: req.user.id,
+    });
 
-    if (!note) {
-      return res.status(404).json({
-        message: "Note not found",
-      });
-    }
-
-    await note.deleteOne();
-
-    res.status(200).json({
-      message: "Note Deleted Successfully",
+    res.json({
+      message: "Note Deleted",
     });
   } catch (error) {
     res.status(500).json({
-      message: error.message,
+      message: "Delete Failed",
     });
   }
 };
 
-
-// ARCHIVE + UNARCHIVE
-const archiveNote = async (req, res) => {
+// ARCHIVE / UNARCHIVE
+exports.archiveNote = async (req, res) => {
   try {
-    const note = await Note.findById(req.params.id);
+    const note = await Note.findOne({
+      _id: req.params.id,
+      user: req.user.id,
+    });
 
-    if (!note) {
-      return res.status(404).json({
-        message: "Note not found",
-      });
-    }
-
-    // TOGGLE TRUE FALSE
     note.archived = !note.archived;
 
     await note.save();
 
-    res.status(200).json({
-      message: note.archived
-        ? "Note Archived"
-        : "Note Unarchived",
-      note,
-    });
-
+    res.json(note);
   } catch (error) {
     res.status(500).json({
-      message: error.message,
+      message: "Archive Failed",
     });
   }
-};
-
-
-module.exports = {
-  createNote,
-  getNotes,
-  getSingleNote,
-  updateNote,
-  deleteNote,
-  archiveNote,
 };
