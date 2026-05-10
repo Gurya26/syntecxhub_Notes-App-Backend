@@ -10,11 +10,15 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   const loginUser = async (e) => {
 
     e.preventDefault();
 
     try {
+
+      setLoading(true);
 
       const response = await axios.post(
         "https://syntecxhub-notes-app-backend.onrender.com/api/users/login",
@@ -36,6 +40,10 @@ function Login() {
     } catch (error) {
 
       toast.error("Login Failed ❌");
+
+    } finally {
+
+      setLoading(false);
 
     }
   };
@@ -112,18 +120,25 @@ function Login() {
 
         <button
           type="submit"
+          disabled={loading}
           style={{
             width: "100%",
             padding: "16px",
             border: "none",
             borderRadius: "10px",
-            background: "#00cc44",
+            background: loading
+              ? "gray"
+              : "#00cc44",
             color: "white",
             fontSize: "22px",
             cursor: "pointer",
           }}
         >
-          Login
+          {
+            loading
+              ? "Logging in..."
+              : "Login"
+          }
         </button>
 
         <p
@@ -151,4 +166,4 @@ function Login() {
   );
 }
 
-export default Login;;
+export default Login;
