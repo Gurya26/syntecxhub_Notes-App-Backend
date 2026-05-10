@@ -39,7 +39,7 @@ function Dashboard() {
       setLoading(true);
 
       const response = await axios.get(
-        "http://localhost:5000/api/notes",
+        "https://syntecxhub-notes-app-backend.onrender.com/api/notes",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -62,7 +62,7 @@ function Dashboard() {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/notes",
+        "https://syntecxhub-notes-app-backend.onrender.com/api/notes",
         {
           title,
           content,
@@ -90,7 +90,7 @@ function Dashboard() {
   const deleteNote = async () => {
     try {
       await axios.delete(
-        `http://localhost:5000/api/notes/${deleteId}`,
+        `https://syntecxhub-notes-app-backend.onrender.com/api/notes/${deleteId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -113,7 +113,7 @@ function Dashboard() {
   const toggleArchive = async (id, archived) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/notes/archive/${id}`,
+        `https://syntecxhub-notes-app-backend.onrender.com/api/notes/archive/${id}`,
         {},
         {
           headers: {
@@ -154,7 +154,7 @@ function Dashboard() {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/notes/${editingId}`,
+        `https://syntecxhub-notes-app-backend.onrender.com/api/notes/${editingId}`,
         {
           title,
           content,
