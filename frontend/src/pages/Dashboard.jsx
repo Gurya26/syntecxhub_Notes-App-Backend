@@ -16,9 +16,11 @@ function Dashboard() {
 
   const [editId, setEditId] = useState(null);
 
+  const [deleteId, setDeleteId] = useState(null);
+
   const token = localStorage.getItem("token");
 
-  // GET NOTES
+  // FETCH NOTES
   const fetchNotes = async () => {
 
     try {
@@ -72,6 +74,7 @@ function Dashboard() {
       setNotes([response.data, ...notes]);
 
       setTitle("");
+
       setContent("");
 
       toast.success("Note Created 🚀");
@@ -84,18 +87,12 @@ function Dashboard() {
   };
 
   // DELETE NOTE
-  const deleteNote = async (id) => {
-
-    const confirmDelete = window.confirm(
-      "Delete this note?"
-    );
-
-    if (!confirmDelete) return;
+  const deleteNote = async () => {
 
     try {
 
       await axios.delete(
-        `https://syntecxhub-notes-app-backend.onrender.com/api/notes/${id}`,
+        `https://syntecxhub-notes-app-backend.onrender.com/api/notes/${deleteId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -104,10 +101,14 @@ function Dashboard() {
       );
 
       setNotes(
-        notes.filter((note) => note._id !== id)
+        notes.filter(
+          (note) => note._id !== deleteId
+        )
       );
 
-      toast.success("Note Deleted");
+      toast.success("Note Deleted ❌");
+
+      setDeleteId(null);
 
     } catch (error) {
 
@@ -240,6 +241,7 @@ function Dashboard() {
   };
 
   return (
+
     <div
       style={{
         background: "black",
@@ -257,6 +259,7 @@ function Dashboard() {
           alignItems: "center",
         }}
       >
+
         <h1
           style={{
             color: "gold",
@@ -280,6 +283,7 @@ function Dashboard() {
         >
           Logout
         </button>
+
       </div>
 
       {/* CREATE NOTE */}
@@ -291,13 +295,18 @@ function Dashboard() {
           marginTop: "30px",
         }}
       >
+
         <h2
           style={{
             fontSize: "40px",
             marginBottom: "20px",
           }}
         >
-          {editId ? "Edit Note ✏️" : "Create Note 🚀"}
+          {
+            editId
+              ? "Edit Note ✏️"
+              : "Create Note 🚀"
+          }
         </h2>
 
         <input
@@ -354,8 +363,13 @@ function Dashboard() {
             fontSize: "22px",
           }}
         >
-          {editId ? "Update Note" : "Create Note"}
+          {
+            editId
+              ? "Update Note"
+              : "Create Note"
+          }
         </button>
+
       </div>
 
       {/* SEARCH */}
@@ -387,6 +401,7 @@ function Dashboard() {
           flexWrap: "wrap",
         }}
       >
+
         <button onClick={() => setFilter("all")}>
           All Notes
         </button>
@@ -398,126 +413,264 @@ function Dashboard() {
         <button onClick={() => setFilter("archived")}>
           Archived Notes
         </button>
+
       </div>
 
-      {/* NOTES */}
+      {/* SEARCH RESULT */}
+      <div
+        style={{
+          marginTop: "25px",
+          fontSize: "20px",
+          fontWeight: "bold",
+        }}
+      >
+        {
+          filteredNotes.length > 0
+            ? `✅ ${filteredNotes.length} Notes Found`
+            : "❌ No Notes Found"
+        }
+      </div>
+
+      {/* NOTES GRID */}
       <div
         style={{
           display: "grid",
           gridTemplateColumns:
-            "repeat(auto-fit, minmax(300px, 1fr))",
+            "repeat(auto-fit, minmax(320px, 1fr))",
           gap: "30px",
-          marginTop: "40px",
+          marginTop: "35px",
         }}
       >
+
         {filteredNotes.map((note) => (
 
-<div
-  key={note._id}
-  style={{
-    background: note.archived
-      ? "#7a3e00"
-      : "#07153a",
-    padding: "25px",
-    borderRadius: "20px",
-    minHeight: "420px",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-  }}
->
-  <div>
+          <div
+            key={note._id}
+            style={{
+              background: note.archived
+                ? "#7a3e00"
+                : "#07153a",
+              borderRadius: "20px",
+              padding: "25px",
+              minHeight: "450px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+            }}
+          >
 
-    <h2
-      style={{
-        color: "#00ff88",
-        marginBottom: "15px",
-        fontSize: "38px",
-        wordBreak: "break-word",
-      }}
-    >
-      {note.title}
-    </h2>
+            {/* TITLE */}
+            <div
+              style={{
+                height: "90px",
+                overflow: "hidden",
+              }}
+            >
 
-    <p
-      style={{
-        marginBottom: "25px",
-        fontSize: "22px",
-        lineHeight: "1.5",
-        wordBreak: "break-word",
-      }}
-    >
-      {note.content}
-    </p>
+              <h2
+                style={{
+                  color: "#00ff88",
+                  fontSize: "34px",
+                  lineHeight: "1.2",
+                  wordBreak: "break-word",
+                }}
+              >
+                {note.title}
+              </h2>
 
-  </div>
+            </div>
 
-  <div
-    style={{
-      display: "flex",
-      gap: "12px",
-      flexWrap: "wrap",
-      marginTop: "auto",
-    }}
-  >
-    <button
-      onClick={() => editNote(note)}
-      style={{
-        background: "#2f80ed",
-        color: "white",
-        border: "none",
-        padding: "12px 18px",
-        borderRadius: "10px",
-        cursor: "pointer",
-        minWidth: "90px",
-      }}
-    >
-      Edit
-    </button>
+            {/* CONTENT */}
+            <div
+              style={{
+                height: "170px",
+                overflow: "hidden",
+                marginTop: "10px",
+              }}
+            >
 
-    <button
-      onClick={() =>
-        archiveNote(note._id)
-      }
-      style={{
-        background: "#e0a100",
-        color: "white",
-        border: "none",
-        padding: "12px 18px",
-        borderRadius: "10px",
-        cursor: "pointer",
-        minWidth: "110px",
-      }}
-    >
-      {
-        note.archived
-          ? "Unarchive"
-          : "Archive"
-      }
-    </button>
+              <p
+                style={{
+                  fontSize: "22px",
+                  lineHeight: "1.5",
+                  color: "white",
+                  wordBreak: "break-word",
+                }}
+              >
+                {note.content}
+              </p>
 
-    <button
-      onClick={() =>
-        deleteNote(note._id)
-      }
-      style={{
-        background: "#ff2d55",
-        color: "white",
-        border: "none",
-        padding: "12px 18px",
-        borderRadius: "10px",
-        cursor: "pointer",
-        minWidth: "90px",
-      }}
-    >
-      Delete
-    </button>
+            </div>
 
-  </div>
-</div>
+            {/* BUTTONS */}
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                flexWrap: "wrap",
+                marginTop: "20px",
+              }}
+            >
+
+              <button
+                onClick={() => editNote(note)}
+                style={{
+                  background: "#2f80ed",
+                  color: "white",
+                  border: "none",
+                  padding: "12px 20px",
+                  borderRadius: "10px",
+                  cursor: "pointer",
+                  fontSize: "18px",
+                }}
+              >
+                Edit
+              </button>
+
+              <button
+                onClick={() =>
+                  archiveNote(note._id)
+                }
+                style={{
+                  background: "#e0a100",
+                  color: "white",
+                  border: "none",
+                  padding: "12px 20px",
+                  borderRadius: "10px",
+                  cursor: "pointer",
+                  fontSize: "18px",
+                }}
+              >
+                {
+                  note.archived
+                    ? "Unarchive"
+                    : "Archive"
+                }
+              </button>
+
+              <button
+                onClick={() =>
+                  setDeleteId(note._id)
+                }
+                style={{
+                  background: "#ff2d55",
+                  color: "white",
+                  border: "none",
+                  padding: "12px 20px",
+                  borderRadius: "10px",
+                  cursor: "pointer",
+                  fontSize: "18px",
+                }}
+              >
+                Delete
+              </button>
+
+            </div>
+
+          </div>
 
         ))}
+
       </div>
+
+      {/* DELETE MODAL */}
+      {
+        deleteId && (
+
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              background: "rgba(0,0,0,0.7)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 999,
+            }}
+          >
+
+            <div
+              style={{
+                background: "#07153a",
+                padding: "40px",
+                borderRadius: "20px",
+                width: "90%",
+                maxWidth: "450px",
+                textAlign: "center",
+              }}
+            >
+
+              <h2
+                style={{
+                  color: "white",
+                  marginBottom: "20px",
+                  fontSize: "32px",
+                }}
+              >
+                Delete Note ❌
+              </h2>
+
+              <p
+                style={{
+                  color: "white",
+                  marginBottom: "30px",
+                  fontSize: "20px",
+                }}
+              >
+                Are you sure you want to delete this note?
+              </p>
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: "20px",
+                }}
+              >
+
+                <button
+                  onClick={deleteNote}
+                  style={{
+                    background: "#ff2d55",
+                    color: "white",
+                    border: "none",
+                    padding: "12px 25px",
+                    borderRadius: "10px",
+                    cursor: "pointer",
+                    fontSize: "18px",
+                  }}
+                >
+                  Delete
+                </button>
+
+                <button
+                  onClick={() =>
+                    setDeleteId(null)
+                  }
+                  style={{
+                    background: "gray",
+                    color: "white",
+                    border: "none",
+                    padding: "12px 25px",
+                    borderRadius: "10px",
+                    cursor: "pointer",
+                    fontSize: "18px",
+                  }}
+                >
+                  Cancel
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        )
+      }
 
     </div>
   );
