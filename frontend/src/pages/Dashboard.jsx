@@ -5,17 +5,11 @@ import toast from "react-hot-toast";
 function Dashboard() {
 
   const [notes, setNotes] = useState([]);
-
   const [title, setTitle] = useState("");
-
   const [content, setContent] = useState("");
-
   const [search, setSearch] = useState("");
-
   const [filter, setFilter] = useState("all");
-
   const [editId, setEditId] = useState(null);
-
   const [deleteId, setDeleteId] = useState(null);
 
   const token = localStorage.getItem("token");
@@ -74,7 +68,6 @@ function Dashboard() {
       setNotes([response.data, ...notes]);
 
       setTitle("");
-
       setContent("");
 
       toast.success("Note Created 🚀");
@@ -141,9 +134,9 @@ function Dashboard() {
       );
 
       if (response.data.archived) {
-        toast.success("Note Archived 📦");
+        toast.success("Note Archived");
       } else {
-        toast.success("Note Unarchived ♻️");
+        toast.success("Note Unarchived");
       }
 
     } catch (error) {
@@ -157,9 +150,7 @@ function Dashboard() {
   const editNote = (note) => {
 
     setTitle(note.title);
-
     setContent(note.content);
-
     setEditId(note._id);
 
     window.scrollTo({
@@ -195,9 +186,7 @@ function Dashboard() {
       );
 
       setTitle("");
-
       setContent("");
-
       setEditId(null);
 
       toast.success("Note Updated ✏️");
@@ -385,7 +374,7 @@ function Dashboard() {
           marginTop: "30px",
           padding: "18px",
           borderRadius: "10px",
-          border: "none",
+          border: "1px solid white",
           background: "#07153a",
           color: "white",
           fontSize: "18px",
@@ -396,40 +385,79 @@ function Dashboard() {
       <div
         style={{
           display: "flex",
-          gap: "15px",
-          marginTop: "25px",
+          gap: "20px",
+          marginTop: "30px",
           flexWrap: "wrap",
         }}
       >
 
-        <button onClick={() => setFilter("all")}>
+        <button
+          onClick={() => setFilter("all")}
+          style={{
+            background: "#1e293b",
+            color: "white",
+            border: "none",
+            padding: "12px 20px",
+            borderRadius: "10px",
+            cursor: "pointer",
+            fontSize: "18px",
+          }}
+        >
           All Notes
         </button>
 
-        <button onClick={() => setFilter("active")}>
+        <button
+          onClick={() => setFilter("active")}
+          style={{
+            background: "#00cc44",
+            color: "white",
+            border: "none",
+            padding: "12px 20px",
+            borderRadius: "10px",
+            cursor: "pointer",
+            fontSize: "18px",
+          }}
+        >
           Active Notes
         </button>
 
-        <button onClick={() => setFilter("archived")}>
+        <button
+          onClick={() => setFilter("archived")}
+          style={{
+            background: "#d97706",
+            color: "white",
+            border: "none",
+            padding: "12px 20px",
+            borderRadius: "10px",
+            cursor: "pointer",
+            fontSize: "18px",
+          }}
+        >
           Archived Notes
         </button>
 
       </div>
 
       {/* SEARCH RESULT */}
-      <div
-        style={{
-          marginTop: "25px",
-          fontSize: "20px",
-          fontWeight: "bold",
-        }}
-      >
-        {
-          filteredNotes.length > 0
-            ? `✅ ${filteredNotes.length} Notes Found`
-            : "❌ No Notes Found"
-        }
-      </div>
+      {
+        search && (
+
+          <div
+            style={{
+              marginTop: "25px",
+              fontSize: "22px",
+              fontWeight: "bold",
+            }}
+          >
+            {
+              filteredNotes.length > 0
+                ? `✅ ${filteredNotes.length} Notes Found`
+                : "❌ No Notes Found"
+            }
+          </div>
+
+        )
+      }
 
       {/* NOTES GRID */}
       <div
@@ -463,7 +491,6 @@ function Dashboard() {
             <div
               style={{
                 height: "90px",
-                overflow: "hidden",
               }}
             >
 
@@ -484,7 +511,6 @@ function Dashboard() {
             <div
               style={{
                 height: "170px",
-                overflow: "hidden",
                 marginTop: "10px",
               }}
             >
@@ -673,6 +699,7 @@ function Dashboard() {
       }
 
     </div>
+
   );
 }
 
