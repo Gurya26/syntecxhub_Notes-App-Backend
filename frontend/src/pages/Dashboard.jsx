@@ -412,93 +412,109 @@ function Dashboard() {
       >
         {filteredNotes.map((note) => (
 
-          <div
-            key={note._id}
-            style={{
-              background: note.archived
-                ? "#7a3e00"
-                : "#07153a",
-              padding: "25px",
-              borderRadius: "20px",
-            }}
-          >
-            <h2
-              style={{
-                color: "#00ff88",
-                marginBottom: "15px",
-                fontSize: "45px",
-              }}
-            >
-              {note.title}
-            </h2>
+<div
+  key={note._id}
+  style={{
+    background: note.archived
+      ? "#7a3e00"
+      : "#07153a",
+    padding: "25px",
+    borderRadius: "20px",
+    minHeight: "420px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+  }}
+>
+  <div>
 
-            <p
-              style={{
-                marginBottom: "20px",
-                fontSize: "24px",
-              }}
-            >
-              {note.content}
-            </p>
+    <h2
+      style={{
+        color: "#00ff88",
+        marginBottom: "15px",
+        fontSize: "38px",
+        wordBreak: "break-word",
+      }}
+    >
+      {note.title}
+    </h2>
 
-            <div
-              style={{
-                display: "flex",
-                gap: "15px",
-                flexWrap: "wrap",
-              }}
-            >
-              <button
-                onClick={() => editNote(note)}
-                style={{
-                  background: "#2f80ed",
-                  color: "white",
-                  border: "none",
-                  padding: "12px 18px",
-                  borderRadius: "10px",
-                  cursor: "pointer",
-                }}
-              >
-                Edit
-              </button>
+    <p
+      style={{
+        marginBottom: "25px",
+        fontSize: "22px",
+        lineHeight: "1.5",
+        wordBreak: "break-word",
+      }}
+    >
+      {note.content}
+    </p>
 
-              <button
-                onClick={() =>
-                  archiveNote(note._id)
-                }
-                style={{
-                  background: "#e0a100",
-                  color: "white",
-                  border: "none",
-                  padding: "12px 18px",
-                  borderRadius: "10px",
-                  cursor: "pointer",
-                }}
-              >
-                {
-                  note.archived
-                    ? "Unarchive"
-                    : "Archive"
-                }
-              </button>
+  </div>
 
-              <button
-                onClick={() =>
-                  deleteNote(note._id)
-                }
-                style={{
-                  background: "#ff2d55",
-                  color: "white",
-                  border: "none",
-                  padding: "12px 18px",
-                  borderRadius: "10px",
-                  cursor: "pointer",
-                }}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
+  <div
+    style={{
+      display: "flex",
+      gap: "12px",
+      flexWrap: "wrap",
+      marginTop: "auto",
+    }}
+  >
+    <button
+      onClick={() => editNote(note)}
+      style={{
+        background: "#2f80ed",
+        color: "white",
+        border: "none",
+        padding: "12px 18px",
+        borderRadius: "10px",
+        cursor: "pointer",
+        minWidth: "90px",
+      }}
+    >
+      Edit
+    </button>
+
+    <button
+      onClick={() =>
+        archiveNote(note._id)
+      }
+      style={{
+        background: "#e0a100",
+        color: "white",
+        border: "none",
+        padding: "12px 18px",
+        borderRadius: "10px",
+        cursor: "pointer",
+        minWidth: "110px",
+      }}
+    >
+      {
+        note.archived
+          ? "Unarchive"
+          : "Archive"
+      }
+    </button>
+
+    <button
+      onClick={() =>
+        deleteNote(note._id)
+      }
+      style={{
+        background: "#ff2d55",
+        color: "white",
+        border: "none",
+        padding: "12px 18px",
+        borderRadius: "10px",
+        cursor: "pointer",
+        minWidth: "90px",
+      }}
+    >
+      Delete
+    </button>
+
+  </div>
+</div>
 
         ))}
       </div>
